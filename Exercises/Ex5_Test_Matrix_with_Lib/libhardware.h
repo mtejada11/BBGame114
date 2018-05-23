@@ -1,98 +1,60 @@
 
-//========== BBGAME114 HW LIBARY ==========
+//========== BBGAME114 HARDWARE LIBARY ==========
 
-//Date: October 17, 2017
+//Date: May 22, 2018
 
 
 #ifndef LIBHARDWARE_H
 #define LIBHARDWARE_H
 
-#include <EEPROM.h>
 
+byte display_rows[] = {8,9,11,12};
+byte display_cols[] = {2,3,4,5,6,7,A5,A4,A3,A2,A1};
+byte btn_pins[3] = {A0,A7,A6};
 
-class HwSetup
-{
-public:
-  byte id;
-  bool simpleMode;
-  byte rndSeed;
-  void ReadFromEeprom();
-  void StoreRndSeed(byte x);
-};
-
-
-extern byte *display_rows;
-extern byte *display_cols;
-extern byte *btn_pins;
-extern bool inv_polarity_rows23;
-
-
-byte display_rows_03[] = {8,9,11,12};
-byte display_cols_03[] = {2,3,4,5,6,7,A5,A4,A3,A2,A1};
-byte btn_pins_03[3] = {A0,A7,A6};
-
-
-void HwSetup::ReadFromEeprom()
-{
-  EEPROM.get(5, rndSeed);
-  randomSeed(rndSeed);
-
-  display_rows = display_rows_03;
-  display_cols = display_cols_03;
-  btn_pins = btn_pins_03;
-  inv_polarity_rows23 = false;
-}
-
-
-void HwSetup::StoreRndSeed(byte x)
-{
-  EEPROM.put(5, x);
-  randomSeed(x);
-}
-
-
-#ifndef DISPLAY_H
-#define DISPLAY_H
+byte display_buffer[11];
+byte scan_row = 0;
 
 
 class Display
 {
 public:
-    void setup();
+    void setup(byte _numCols, byte _numRows);
     void clear();
     void setup_refresh();
     static byte MakeBit(byte y);
     byte SetBit(byte x, byte y, byte c);
     void SetByte(byte x, byte bits);
-
-    void Test();
+    void VLine(byte x);
+    void HLine(byte y);
 
 private:
+    byte numCols;
+    byte numRows;
 };
 
 
-byte *display_rows; //display_rows[] = {8,6,9,11};
-byte *display_cols; //display_cols[] = {12,7,5,4,3,2,A5,A4,A3,A2,A1};
-byte display_buffer[11];
-
-bool inv_polarity_rows23 = false;
-
-byte scan_row = 0;
-byte scan_count = 0;
-
-
-void Display::setup()
+void Display::setup(byte _numCols, byte _numRows)
 {
+  numCols = _numCols;
+  numRows = _numRows;
+
+  if(numCols > 11) numCols = 11;
+  if(numRows > 4)  numRows = 4;
+
   int i,j;
-  for(i=0; i<11; i++) pinMode(display_cols[i],OUTPUT);
-  for(j=0; j<4;  j++) pinMode(display_rows[j],OUTPUT);
+  for(i=0; i<numCols; i++) pinMode(display_cols[i],OUTPUT);
+  for(j=0; j<numRows; j++) pinMode(display_rows[j],OUTPUT);
+  clear();
+  setup_refresh();
+
 }
 
 
 void Display::clear()
 {
   byte *p = display_buffer;
-  for(byte i = 0; i<11; i++)
+  for(byte i = 0; i<numCols; i++)
     (*(p++)) = 0;
 }
 
@@ -105,7 +67,7 @@ static byte Display::MakeBit(byte y)
 
 byte Display::SetBit(byte x, byte y, byte c)
 {
-  if ((x<0) || (x>10)) return;
+  if ((x<0) || (x>=numCols)) return;
   
   byte mask = ~(8 >> y);
   byte bits = (c << (3 - y));
@@ -119,7 +81,7 @@ byte Display::SetBit(byte x, byte y, byte c)
 
 void Display::SetByte(byte x, byte bits)
 {
-  if ((x<0) || (x>10)) return;
+  if ((x<0) || (x>=numCols)) return;
   
   noInterrupts();
   display_buffer[x] |= bits;
@@ -127,30 +89,17 @@ void Display::SetByte(byte x, byte bits)
 }
 
 
-void Display::Test()
+void Display::VLine(byte x)
 {
-  byte i;
-  byte x, y;
-  int d = 500;
+  for(byte i = 0; i < numRows; i++)
+    SetBit(x,i,1);
+}
 
-  while(true)
-  {
-    clear();
-    for(y=0; y<4; y++)
-    {
-      for(x=0; x<11; x++) SetBit(x, y-1, 0);
-      for(x=0; x<11; x++) SetBit(x, y, 1);
-      delay(d);
-    }
-  
-    clear();
-    for(x=0; x<11; x++)
-    {
-      for(y=0; y<4; y++) SetBit(x-1, y, 0);
-      for(y=0; y<4; y++) SetBit(x, y, 1);
-      delay(d);
-    }
-  }
+
+void Display::HLine(byte y)
+{
+  for(byte i = 0; i < numCols; i++)
+    SetBit(i,y,1);
 }
 
 
@@ -183,41 +132,25 @@ SIGNAL(TIMER2_COMPA_vect)
 {
   byte j = scan_row;
   byte on_value;
-  if(!inv_polarity_rows23)
-    on_value = 1;
-  else
-    on_value = ((j==0)||(j==3)) ? 1 : 0;
-  byte off_value = (on_value) ? 0 : 1;
 
   digitalWrite(display_rows[0],0);
   digitalWrite(display_rows[1],0);
   digitalWrite(display_rows[2],0);
   digitalWrite(display_rows[3],0);
   for(byte i = 0; i < 11; i++)
-    digitalWrite(display_cols[i], off_value);
+    digitalWrite(display_cols[i], 0);
 
-  //if(scan_count == 1)
-  {
-    digitalWrite(display_rows[j],1);
-    byte *p = display_buffer;
-    byte mask = 8 >> j; 
-    for(byte i = 0; i < 11; i++)
-      digitalWrite(display_cols[i], ((*(p++)) & mask) ? on_value : off_value);
-  }
+  digitalWrite(display_rows[j],1);
+  byte *p = display_buffer;
+  byte mask = 8 >> j; 
+  for(byte i = 0; i < 11; i++)
+    digitalWrite(display_cols[i], ((*(p++)) & mask) ? 1 : 0);
 
   noInterrupts();
   scan_row++;
   scan_row %= 4;
-  scan_count++;
-  scan_count %= 2;
   interrupts();
 }
-
-
-#endif //MISSILE_H
-
-#ifndef SOUND_H
-#define SOUND_H
 
 
 #define SNDPIN 10
@@ -285,9 +218,6 @@ void Sound::shipHitSound()
 }
 
 
-#endif //SOUND_H
-
-
 class Buttons
 {
 public:
@@ -296,7 +226,6 @@ public:
 };
 
 
-byte *btn_pins; //btn_pins[3] = {A0,A6,A7};
 bool btn_not_pressed[3] = { true, true, true };
 
 
