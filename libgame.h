@@ -14,7 +14,6 @@
 
 
 extern Display display;
-
 extern Sound sound;
 extern int score;
 
@@ -109,30 +108,30 @@ Ship::Ship()
 
 void Ship::Draw(Display &display)
 {
-    byte a = Display::MakeBit(pos);
+    byte a = Display::makeBit(pos);
     
     switch(state)
     {
     case 1://Normal
-      display.SetBit(0,pos,1);
-      bitImage = display.SetBit(1,pos,1);
+      display.setBit(0,pos,1);
+      bitImage = display.setBit(1,pos,1);
       break;
 
     case 2:
     case 4:
     case 6:
       //Explosion 1
-      //display.SetByte(0, (a<<1)|(a>>1));
-      //display.SetByte(1, (a<<1)|(a>>1));
-      //display.SetByte(2, a);
+      //display.setByte(0, (a<<1)|(a>>1));
+      //display.setByte(1, (a<<1)|(a>>1));
+      //display.setByte(2, a);
       state++;
       break;
 
     case 3:
     case 5:
       //Explosion 2
-      display.SetByte(0,a);
-      display.SetByte(1,a);
+      display.setByte(0,a);
+      display.setByte(1,a);
       state++;
       break;
 
@@ -182,7 +181,7 @@ Missile::Missile()
 void Missile::Draw(Display &display)
 {
     if (fired)
-        bitImage = display.SetBit(altitude,pos,1);
+        bitImage = display.setBit(altitude,pos,1);
 }
 
 
@@ -237,13 +236,13 @@ int counter2 = 0;
 byte NewAlienLevel1(int counter)
 {
     byte y = random(4);
-    return Display::MakeBit(y);
+    return Display::makeBit(y);
 }
 
 byte NewAlienLevel2(int counter)
 {
     byte y = (counter2++ % 2) + 1;
-    return Display::MakeBit(y);
+    return Display::makeBit(y);
 }
 
 byte NewAlienLevel3(int counter)
@@ -307,23 +306,23 @@ void Aliens::Draw(Display &display)
       switch(state[i])
       {
       case 1://Normal
-        display.SetByte(pos[i],a);
+        display.setByte(pos[i],a);
         break;
 
       case 2:
       case 4:
       case 6:
         //Explosion 1
-        display.SetByte(pos[i]-1, a);
-        display.SetByte(pos[i], (a<<1)|(a>>1));
-        display.SetByte(pos[i]+1, a);
+        display.setByte(pos[i]-1, a);
+        display.setByte(pos[i], (a<<1)|(a>>1));
+        display.setByte(pos[i]+1, a);
         state[i]++;
         break;
 
       case 3:
       case 5:
         //Explosion 2
-        display.SetByte(pos[i],a);
+        display.setByte(pos[i],a);
         state[i]++;
         break;
 
@@ -334,7 +333,7 @@ void Aliens::Draw(Display &display)
         break;
       }
     }
-    display.SetByte(pos[i],aliens[i]);
+    display.setByte(pos[i],aliens[i]);
   }
 }
 
@@ -354,173 +353,6 @@ void Aliens::Update(int counter)
         }
     }
   }
-}
-
-
-
-
-class TextDisplay
-{
-public:
-  void DisplayText(char *s);
-  int GetPixelWidth(char *s, int n);
-  void GetCharPixelData(char c, byte *np, byte **p);
-};
-
-
-void TextDisplay::DisplayText(char *s)
-{
-  String str = String(s);
-  byte n = str.length();
-  byte np = GetPixelWidth(s, n);
-  int pos = (11 - np) / 2;
-  byte *p;
-
-  for(byte i=0; i< n; i++)
-  {
-    GetCharPixelData(s[i],&np,&p);
-    bool nsp = false;
-    if(np>=0x10) 
-    {
-      nsp = true;
-      np = np & 0xF;
-    }
-    for(byte j=0; j<np; j++)
-    {
-      display.SetByte(pos+j, p[j]);
-    }
-    pos += np;
-    if(!nsp && (i<(n-1)))pos += 1;
-  }
-}
-
-
-int TextDisplay::GetPixelWidth(char *s, int n)
-{
-  byte np;
-  byte *p;
-
-  int pos = 0;
-  for(int i = 0; i < n; i++)
-  {
-    GetCharPixelData(s[i],&np,&p);
-    bool nsp = false;
-    if(np>=0x10) 
-    {
-      nsp = true;
-      np = np & 0xF;
-    }
-    pos += np;
-    if(!nsp && (i<(n-1)))pos += 1;
-  }
-
-  return pos;
-}
-
-
-byte font3x4[] = 
-{
-//  .X.  XX.  .XX  XX.  XXX  XXX  .XX  X.X  XXX  . X  X.X  X..  X...X
-//  X.X  XX.  X..  X.X  XX.  XX.  X..  XXX  .X.  ..X  XX.  X..  XX.XX
-//  XXX  X.X  X..  X.X  X..  X..  X.X  X.X  .X.  ..X  X.X  X..  X.X.X
-//  X.X  XXX  .XX  XX.  XXX  X..  .XX  X.X  XXX  XX.  X.X  XXX  X...X
-
-3, 0x7, 0xA, 0x7, 0x0, 0x0,
-3, 0xF, 0xD, 0x3, 0x0, 0x0,
-3, 0x6, 0x9, 0x9, 0x0, 0x0,
-3, 0xF, 0x9, 0x6, 0x0, 0x0,
-3, 0xF, 0xD, 0x9, 0x0, 0x0,
-3, 0xF, 0xC, 0x8, 0x0, 0x0,
-3, 0x6, 0x9, 0xB, 0x0, 0x0,
-3, 0xF, 0x4, 0xF, 0x0, 0x0,
-1, 0xF, 0x0, 0x0, 0x0, 0x0,
-3, 0x1, 0x1, 0xE, 0x0, 0x0,
-3, 0xF, 0x4, 0xB, 0x0, 0x0,
-3, 0xF, 0x1, 0x1, 0x0, 0x0,
-5, 0xF, 0x4, 0x2, 0x4, 0xF,
- 
-//  XX.  XXX  XX.  XXX.  XX.  .XX  XXX  X.X  X.X  X...X  X.X  X.X  XXX
-//  X.X  X.X  X.X  X.X.  X.X  XX.  .X.  X.X  X.X  X.X.X  .X.  X.X  ..X
-//  X.X  X.X  XX.  X.X.  XX.  ..X  .X.  X.X  X.X  X.X.X  .X.  .X.  XX.
-//  X.X  XXX  X..  XX.X  X.X  XX.  .X.  XXX  .X.  .X X.  X.X  .X.  XXX
-
-3, 0xF, 0x8, 0x7, 0x0, 0x0,
-3, 0xF, 0x9, 0xF, 0x0, 0x0,
-3, 0xF, 0xA, 0x4, 0x0, 0x0,
-4, 0xF, 0x9, 0xE, 0x1, 0x0,
-3, 0xF, 0xA, 0x5, 0x0, 0x0,
-3, 0x5, 0xD, 0xA, 0x0, 0x0,
-3, 0x8, 0xF, 0x8, 0x0, 0x0,
-3, 0xF, 0x1, 0xF, 0x0, 0x0,
-3, 0xE, 0x1, 0xE, 0x0, 0x0,
-5, 0xE, 0x1, 0x6, 0x1, 0xE,
-3, 0x9, 0x6, 0x9, 0x0, 0x0,
-3, 0xC, 0x3, 0xC, 0x0, 0x0,
-3, 0xB, 0xB, 0xD, 0x0, 0x0,
-//0x15, 0xA, 0xE, 0xE, 0xA, 0xA,
-//0x15, 0x6, 0x6, 0x6, 0x9, 0x0,
-//0x15, 0x1, 0xF, 0xA, 0xF, 0x1,
-//0x15, 0x2, 0x2, 0x6, 0x6, 0xA,
-//0x15, 0xA, 0x6, 0x6, 0x6, 0x9,
- 
-//  .X.  .X.  XX.  XX.  X.X  XXX  .XX  XXX  XXX  XXX
-//  X.X  XX.  .XX  .XX  X.X  XX.  XX.  ..X  XXX  X.X
-//  X.X  .X.  X..  ..X  XXX  ..X  X.X  .X.  X.X  XXX
-//  .X.  .X.  XXX  XX.  ..X  XX.  XXX  .X.  XXX  ..X
-
-3, 0x6, 0x9, 0x6, 0x0, 0x0,
-2, 0x4, 0xF, 0x0, 0x0, 0x0,
-3, 0xB, 0xD, 0x5, 0x0, 0x0,
-3, 0x9, 0xD, 0x6, 0x0, 0x0,
-3, 0xE, 0x2, 0xF, 0x0, 0x0,
-3, 0xD, 0xD, 0xA, 0x0, 0x0,
-3, 0x7, 0xD, 0xB, 0x0, 0x0,
-3, 0x8, 0xB, 0xC, 0x0, 0x0,
-3, 0xF, 0xD, 0xF, 0x0, 0x0,
-3, 0xE, 0xA, 0xF, 0x0, 0x0,
-
-//        !    "    #    $    %    &    '    (    )    *    +    ,    -    .    /
-//  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...
-//  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...
-//  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...
-//  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...
-
-2, 0x0, 0x0, 0x0, 0x0, 0x0,
-
-//  ...  ...  .X.  XXX  ...  ...  ...  ...  ...  ...
-//  ...  ...  .X.  .XZ  XXX  ...  ...  ...  ...  ...
-//  ...  .X.  ...  ...  ...  ...  ...  ...  ...  ...
-//  .X.  X..  .X.  .X.  ...  ...  ...  ...  ...  ...
-
-1, 0x0, 0x0, 0x0, 0x0, 0x0,
-2, 0x0, 0x0, 0x0, 0x0, 0x0,
-1, 0x0, 0x0, 0x0, 0x0, 0x0,
-3, 0x0, 0x0, 0x0, 0x0, 0x0,
-3, 0x0, 0x0, 0x0, 0x0, 0x0,
-3, 0x0, 0x0, 0x0, 0x0, 0x0,
-3, 0x0, 0x0, 0x0, 0x0, 0x0,
-3, 0x0, 0x0, 0x0, 0x0, 0x0,
-3, 0x0, 0x0, 0x0, 0x0, 0x0,
-3, 0x0, 0x0, 0x0, 0x0, 0x0,
-3, 0x0, 0x0, 0x0, 0x0, 0x0,
-3, 0x0, 0x0, 0x0, 0x0, 0x0,
-3, 0x0, 0x0, 0x0, 0x0, 0x0,
-
-};
-
-
-void TextDisplay::GetCharPixelData(char c, byte *np, byte **p)
-{
-  int index = 0;
-  if((c >= 'A') && (c <= 'Z'))
-    index = c - 'A';
-  else if((c >= '0') && (c <= '9'))
-    index = c - '0' + 26;
-  else if(c >= ' ')
-    index = c - ' ' + 36;
-  index *= 6;
-  (*np) = font3x4[index];
-  (*p) = font3x4 + index + 1;
 }
 
 

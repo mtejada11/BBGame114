@@ -24,7 +24,7 @@ void loop()
   for(int y = 0; y < 4; y++)
   {
     display.clear();
-    display.HLine(y);
+    display.hLine(y);
     delay(d);
   }
 
@@ -32,7 +32,7 @@ void loop()
   for(int x = 0; x < 5; x++)
   {
     display.clear();
-    display.VLine(x);
+    display.vLine(x);
     delay(d);
   }
 }

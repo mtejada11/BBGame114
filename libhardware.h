@@ -1,173 +1,115 @@
 
-//========== BBGAME114 HW LIBARY ==========
+//========== BBGAME114 HARDWARE LIBARY ==========
 
-//Date: October 17, 2017
+//Date: May 22, 2018
 
 
 #ifndef LIBHARDWARE_H
 #define LIBHARDWARE_H
 
-#include <EEPROM.h>
+
+//---------- DISPLAY CLASS ----------
+
+// Purpose: To abstract the BBGame114 LED matrix as a display, 
+// with methods/functions to clear the display, draw a dot,
+// draw horizontal or vertical lines and draw text.
 
 
-class HwSetup
-{
-public:
-  byte id;
-  bool simpleMode;
-  byte rndSeed;
-  void ReadFromEeprom();
-  void StoreRndSeed(byte x);
-};
+byte displayRows[4] = { 8, 9, 11, 12 };
+byte displayCols[11] = { 2, 3, 4, 5, 6, 7, A5, A4, A3, A2, A1 };
 
-
-extern byte *display_rows;
-extern byte *display_cols;
-extern byte *btn_pins;
-extern bool inv_polarity_rows23;
-
-
-//03 Project proposal
-byte display_rows_03[] = {8,9,11,12};
-byte display_cols_03[] = {2,3,4,5,6,7,A5,A4,A3,A2,A1};
-byte btn_pins_03[3] = {A0,A7,A6};
-
-
-void HwSetup::ReadFromEeprom()
-{
-  //PROM.get(0,'A');
-  //PROM.get(1,'L');
-  //PROM.get(2,'I');
-  EEPROM.get(3, id);
-  id = 3;
-  EEPROM.get(4, simpleMode);
-  EEPROM.get(5, rndSeed);
-  randomSeed(rndSeed);
-
-  switch(id)
-  {
-  case 3:
-  default:
-    display_rows = display_rows_03;
-    display_cols = display_cols_03;
-    btn_pins = btn_pins_03;
-    inv_polarity_rows23 = false;
-    break;
-  }
-}
-
-
-void HwSetup::StoreRndSeed(byte x)
-{
-  EEPROM.put(5, x);
-  randomSeed(x);
-}
-
-
-#ifndef DISPLAY_H
-#define DISPLAY_H
+byte displayBuffer[11];
+byte scanRow = 0;
 
 
 class Display
 {
 public:
-    void setup();
+    void setup(byte _numCols, byte _numRows);
     void clear();
-    void setup_refresh();
-    static byte MakeBit(byte y);
-    byte SetBit(byte x, byte y, byte c);
-    void SetByte(byte x, byte bits);
-
-    void Test();
+    static byte makeBit(byte y);
+    byte setBit(byte x, byte y, byte c);
+    void setByte(byte x, byte bits);
+    void vLine(byte x);
+    void hLine(byte y);
 
 private:
+    byte numCols;
+    byte numRows;
+    void setupTimedRefresh();
 };
 
 
-byte *display_rows; //display_rows[] = {8,6,9,11};
-byte *display_cols; //display_cols[] = {12,7,5,4,3,2,A5,A4,A3,A2,A1};
-byte display_buffer[11];
-
-bool inv_polarity_rows23 = false;
-
-byte scan_row = 0;
-byte scan_count = 0;
-
-
-void Display::setup()
+void Display::setup(byte _numCols, byte _numRows)
 {
+  numCols = _numCols;
+  numRows = _numRows;
+  if(numCols > 11) numCols = 11;
+  if(numRows > 4)  numRows = 4;
+
   int i,j;
-  for(i=0; i<11; i++) pinMode(display_cols[i],OUTPUT);
-  for(j=0; j<4;  j++) pinMode(display_rows[j],OUTPUT);
+  for(i = 0; i < numCols; i++) pinMode(displayCols[i], OUTPUT);
+  for(j = 0; j < numRows; j++) pinMode(displayRows[j], OUTPUT);
+  clear();
+
+  setupTimedRefresh();
 }
 
 
 void Display::clear()
 {
-  byte *p = display_buffer;
-  for(byte i = 0; i<11; i++)
+  byte *p = displayBuffer;
+  for(byte i = 0; i < numCols; i++)
     (*(p++)) = 0;
 }
 
 
-static byte Display::MakeBit(byte y)
+static byte Display::makeBit(byte y)
 {
   return (1 << (3 - y));
 }
 
 
-byte Display::SetBit(byte x, byte y, byte c)
+byte Display::setBit(byte x, byte y, byte c)
 {
-  if ((x<0) || (x>10)) return;
+  if ((x<0) || (x>=numCols)) return;
   
   byte mask = ~(8 >> y);
   byte bits = (c << (3 - y));
   noInterrupts();
-  display_buffer[x] &= mask;
-  display_buffer[x] |= bits;
+  displayBuffer[x] &= mask;
+  displayBuffer[x] |= bits;
   interrupts();
+
   return bits;
 }
 
 
-void Display::SetByte(byte x, byte bits)
+void Display::setByte(byte x, byte bits)
 {
-  if ((x<0) || (x>10)) return;
+  if ((x<0) || (x>=numCols)) return;
   
   noInterrupts();
-  display_buffer[x] |= bits;
+  displayBuffer[x] |= bits;
   interrupts();
 }
 
 
-void Display::Test()
+void Display::vLine(byte x)
 {
-  byte i;
-  byte x, y;
-  int d = 500;
-
-  while(true)
-  {
-    clear();
-    for(y=0; y<4; y++)
-    {
-      for(x=0; x<11; x++) SetBit(x, y-1, 0);
-      for(x=0; x<11; x++) SetBit(x, y, 1);
-      delay(d);
-    }
-  
-    clear();
-    for(x=0; x<11; x++)
-    {
-      for(y=0; y<4; y++) SetBit(x-1, y, 0);
-      for(y=0; y<4; y++) SetBit(x, y, 1);
-      delay(d);
-    }
-  }
+  for(byte i = 0; i < numRows; i++)
+    setBit(x, i, 1);
 }
 
 
-void Display::setup_refresh()
+void Display::hLine(byte y)
+{
+  for(byte i = 0; i < numCols; i++)
+    setBit(i, y, 1);
+}
+
+
+void Display::setupTimedRefresh()
 {
   cli();//stop interrupts
 
@@ -194,43 +136,84 @@ void Display::setup_refresh()
 
 SIGNAL(TIMER2_COMPA_vect) 
 {
-  byte j = scan_row;
+  byte j = scanRow;
   byte on_value;
-  if(!inv_polarity_rows23)
-    on_value = 1;
-  else
-    on_value = ((j==0)||(j==3)) ? 1 : 0;
-  byte off_value = (on_value) ? 0 : 1;
 
-  digitalWrite(display_rows[0],0);
-  digitalWrite(display_rows[1],0);
-  digitalWrite(display_rows[2],0);
-  digitalWrite(display_rows[3],0);
+  digitalWrite(displayRows[0], 0);
+  digitalWrite(displayRows[1], 0);
+  digitalWrite(displayRows[2], 0);
+  digitalWrite(displayRows[3], 0);
   for(byte i = 0; i < 11; i++)
-    digitalWrite(display_cols[i], off_value);
+    digitalWrite(displayCols[i], 0);
 
-  //if(scan_count == 1)
-  {
-    digitalWrite(display_rows[j],1);
-    byte *p = display_buffer;
-    byte mask = 8 >> j; 
-    for(byte i = 0; i < 11; i++)
-      digitalWrite(display_cols[i], ((*(p++)) & mask) ? on_value : off_value);
-  }
+  digitalWrite(displayRows[j], 1);
+  byte *p = displayBuffer;
+  byte mask = 8 >> j; 
+  for(byte i = 0; i < 11; i++)
+    digitalWrite(displayCols[i], ((*(p++)) & mask) ? 1 : 0);
 
   noInterrupts();
-  scan_row++;
-  scan_row %= 4;
-  scan_count++;
-  scan_count %= 2;
+  scanRow++;
+  scanRow %= 4;
   interrupts();
 }
 
 
-#endif //MISSILE_H
+//---------- BUTTONS CLASS ----------
 
-#ifndef SOUND_H
-#define SOUND_H
+// Purpose: To simplify the use of the pushbuttons on the 
+// BBGame114 board. The btnPressed() method/function only 
+// returns true one time after a buttons is pressed, and it 
+// is not reset until the button is released.
+
+
+byte buttonPins[3] = { A0, A7, A6 };
+
+
+class Buttons
+{
+public:
+    void setup();
+    bool btnPressed(byte i);
+
+private:
+  bool btnWasNotPressed[3];
+};
+
+
+void Buttons::setup()
+{
+    for(byte i = 0; i < 3; i++)
+    {
+        pinMode(buttonPins[i], INPUT);
+        btnWasNotPressed[i] = true;
+    }
+}
+
+
+bool Buttons::btnPressed(byte i)
+{
+    bool btnPressedNow = analogRead(buttonPins[i])>30;
+    if(btnWasNotPressed[i] && btnPressedNow)
+    {
+      btnWasNotPressed[i] = false;
+      return true;
+    }
+    else
+    {
+      if(!btnPressedNow)
+        btnWasNotPressed[i] = true;
+      return false;
+    }
+}
+
+
+//---------- SOUND CLASS ----------
+
+// Purpose: To output sound tones through the piezoelectric
+// speaker on the the BBGame114 board.
+// NOTE: This class still needs to be reworked to remove references
+// to the Space Invaders game.
 
 
 #define SNDPIN 10
@@ -298,42 +281,186 @@ void Sound::shipHitSound()
 }
 
 
-#endif //SOUND_H
 
 
-class Buttons
+//---------- TEXTDISPLAY CLASS ----------
+
+// Purpose: To draw alphanumeric characters and punctuation on the
+// BBGame114 display.
+
+
+class TextDisplay
 {
 public:
-    void Setup();
-    bool BtnPressed(byte i);
+  TextDisplay(const Display& _display);
+  void displayText(char *s);
+  int getWidthPixels(char *s, int n);
+
+private:
+  const Display& display;
+  void getCharPixelData(char c, byte *np, byte **p);
 };
 
 
-byte *btn_pins; //btn_pins[3] = {A0,A6,A7};
-bool btn_not_pressed[3] = { true, true, true };
-
-
-void Buttons::Setup()
+TextDisplay::TextDisplay(const Display& _display):
+  display(_display)
 {
-    for(byte i=0; i<3; i++)
-        pinMode(btn_pins[i],INPUT);
 }
 
 
-bool Buttons::BtnPressed(byte i)
+void TextDisplay::displayText(char *s)
 {
-    bool btn_pressed = analogRead(btn_pins[i])>30;
-    if(btn_not_pressed[i] && btn_pressed)
+  String str = String(s);
+  byte n = str.length();
+  byte np = getWidthPixels(s, n);
+  int pos = (11 - np) / 2;
+  byte *p;
+
+  for(byte i=0; i< n; i++)
+  {
+    getCharPixelData(s[i],&np,&p);
+    bool nsp = false;
+    if(np>=0x10) 
     {
-      btn_not_pressed[i] = false;
-      return true;
+      nsp = true;
+      np = np & 0xF;
     }
-    else
+    for(byte j=0; j<np; j++)
     {
-      if(!btn_pressed)
-        btn_not_pressed[i] = true;
-      return false;
+      display.setByte(pos+j, p[j]);
     }
+    pos += np;
+    if(!nsp && (i<(n-1)))pos += 1;
+  }
+}
+
+
+int TextDisplay::getWidthPixels(char *s, int n)
+{
+  byte np;
+  byte *p;
+
+  int pos = 0;
+  for(int i = 0; i < n; i++)
+  {
+    getCharPixelData(s[i],&np,&p);
+    bool nsp = false;
+    if(np>=0x10) 
+    {
+      nsp = true;
+      np = np & 0xF;
+    }
+    pos += np;
+    if(!nsp && (i<(n-1)))pos += 1;
+  }
+
+  return pos;
+}
+
+
+byte font3x4[] = 
+{
+//  .X.  XX.  .XX  XX.  XXX  XXX  .XX  X.X  XXX  . X  X.X  X..  X...X
+//  X.X  XX.  X..  X.X  XX.  XX.  X..  XXX  .X.  ..X  XX.  X..  XX.XX
+//  XXX  X.X  X..  X.X  X..  X..  X.X  X.X  .X.  ..X  X.X  X..  X.X.X
+//  X.X  XXX  .XX  XX.  XXX  X..  .XX  X.X  XXX  XX.  X.X  XXX  X...X
+
+3, 0x7, 0xA, 0x7, 0x0, 0x0,
+3, 0xF, 0xD, 0x3, 0x0, 0x0,
+3, 0x6, 0x9, 0x9, 0x0, 0x0,
+3, 0xF, 0x9, 0x6, 0x0, 0x0,
+3, 0xF, 0xD, 0x9, 0x0, 0x0,
+3, 0xF, 0xC, 0x8, 0x0, 0x0,
+3, 0x6, 0x9, 0xB, 0x0, 0x0,
+3, 0xF, 0x4, 0xF, 0x0, 0x0,
+1, 0xF, 0x0, 0x0, 0x0, 0x0,
+3, 0x1, 0x1, 0xE, 0x0, 0x0,
+3, 0xF, 0x4, 0xB, 0x0, 0x0,
+3, 0xF, 0x1, 0x1, 0x0, 0x0,
+5, 0xF, 0x4, 0x2, 0x4, 0xF,
+ 
+//  XX.  XXX  XX.  XXX.  XX.  .XX  XXX  X.X  X.X  X...X  X.X  X.X  XXX
+//  X.X  X.X  X.X  X.X.  X.X  XX.  .X.  X.X  X.X  X.X.X  .X.  X.X  ..X
+//  X.X  X.X  XX.  X.X.  XX.  ..X  .X.  X.X  X.X  X.X.X  .X.  .X.  XX.
+//  X.X  XXX  X..  XX.X  X.X  XX.  .X.  XXX  .X.  .X X.  X.X  .X.  XXX
+
+3, 0xF, 0x8, 0x7, 0x0, 0x0,
+3, 0xF, 0x9, 0xF, 0x0, 0x0,
+3, 0xF, 0xA, 0x4, 0x0, 0x0,
+4, 0xF, 0x9, 0xE, 0x1, 0x0,
+3, 0xF, 0xA, 0x5, 0x0, 0x0,
+3, 0x5, 0xD, 0xA, 0x0, 0x0,
+3, 0x8, 0xF, 0x8, 0x0, 0x0,
+3, 0xF, 0x1, 0xF, 0x0, 0x0,
+3, 0xE, 0x1, 0xE, 0x0, 0x0,
+5, 0xE, 0x1, 0x6, 0x1, 0xE,
+3, 0x9, 0x6, 0x9, 0x0, 0x0,
+3, 0xC, 0x3, 0xC, 0x0, 0x0,
+3, 0xB, 0xB, 0xD, 0x0, 0x0,
+//0x15, 0xA, 0xE, 0xE, 0xA, 0xA,
+//0x15, 0x6, 0x6, 0x6, 0x9, 0x0,
+//0x15, 0x1, 0xF, 0xA, 0xF, 0x1,
+//0x15, 0x2, 0x2, 0x6, 0x6, 0xA,
+//0x15, 0xA, 0x6, 0x6, 0x6, 0x9,
+ 
+//  .X.  .X.  XX.  XX.  X.X  XXX  .XX  XXX  XXX  XXX
+//  X.X  XX.  .XX  .XX  X.X  XX.  XX.  ..X  XXX  X.X
+//  X.X  .X.  X..  ..X  XXX  ..X  X.X  .X.  X.X  XXX
+//  .X.  .X.  XXX  XX.  ..X  XX.  XXX  .X.  XXX  ..X
+
+3, 0x6, 0x9, 0x6, 0x0, 0x0,
+2, 0x4, 0xF, 0x0, 0x0, 0x0,
+3, 0xB, 0xD, 0x5, 0x0, 0x0,
+3, 0x9, 0xD, 0x6, 0x0, 0x0,
+3, 0xE, 0x2, 0xF, 0x0, 0x0,
+3, 0xD, 0xD, 0xA, 0x0, 0x0,
+3, 0x7, 0xD, 0xB, 0x0, 0x0,
+3, 0x8, 0xB, 0xC, 0x0, 0x0,
+3, 0xF, 0xD, 0xF, 0x0, 0x0,
+3, 0xE, 0xA, 0xF, 0x0, 0x0,
+
+//        !    "    #    $    %    &    '    (    )    *    +    ,    -    .    /
+//  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...
+//  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...
+//  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...
+//  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...  ...
+
+2, 0x0, 0x0, 0x0, 0x0, 0x0,
+
+//  ...  ...  .X.  XXX  ...  ...  ...  ...  ...  ...
+//  ...  ...  .X.  .XZ  XXX  ...  ...  ...  ...  ...
+//  ...  .X.  ...  ...  ...  ...  ...  ...  ...  ...
+//  .X.  X..  .X.  .X.  ...  ...  ...  ...  ...  ...
+
+1, 0x0, 0x0, 0x0, 0x0, 0x0,
+2, 0x0, 0x0, 0x0, 0x0, 0x0,
+1, 0x0, 0x0, 0x0, 0x0, 0x0,
+3, 0x0, 0x0, 0x0, 0x0, 0x0,
+3, 0x0, 0x0, 0x0, 0x0, 0x0,
+3, 0x0, 0x0, 0x0, 0x0, 0x0,
+3, 0x0, 0x0, 0x0, 0x0, 0x0,
+3, 0x0, 0x0, 0x0, 0x0, 0x0,
+3, 0x0, 0x0, 0x0, 0x0, 0x0,
+3, 0x0, 0x0, 0x0, 0x0, 0x0,
+3, 0x0, 0x0, 0x0, 0x0, 0x0,
+3, 0x0, 0x0, 0x0, 0x0, 0x0,
+3, 0x0, 0x0, 0x0, 0x0, 0x0,
+
+};
+
+
+void TextDisplay::getCharPixelData(char c, byte *np, byte **p)
+{
+  int index = 0;
+  if((c >= 'A') && (c <= 'Z'))
+    index = c - 'A';
+  else if((c >= '0') && (c <= '9'))
+    index = c - '0' + 26;
+  else if(c >= ' ')
+    index = c - ' ' + 36;
+  index *= 6;
+  (*np) = font3x4[index];
+  (*p) = font3x4 + index + 1;
 }
 
 

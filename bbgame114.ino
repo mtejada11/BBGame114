@@ -4,18 +4,17 @@
 //Date: October 17, 2017
 
 
-#include "libgame.h"
 #include "libhardware.h"
+#include "libgame.h"
 
 
-HwSetup hwsetup;
 Display display;
 Sound sound;
 Buttons buttons;
 Ship ship;
 Missile missile;
 Aliens aliens;
-TextDisplay textDisplay;
+TextDisplay textDisplay(display);
 
 
 int score = 0;
@@ -23,14 +22,10 @@ int score = 0;
 
 void setup() 
 {
-  hwsetup.ReadFromEeprom();
-  
-  display.setup();
-  display.clear();
-  display.setup_refresh();
+  //hwsetup.ReadFromEeprom();
+  display.setup(11, 4);
+  buttons.setup();
   sound.setup();
-
-  buttons.Setup();
 
   //if (buttons.BtnPressed(0))
   //  display.Test();
@@ -86,9 +81,9 @@ void loop_GamePlay()
   if (counter1%(levels[aliens.level].update_interval)==0) aliens.AddAlien(counter1);
   if (counter1%20==0) aliens.Update(counter1);
 
-  if(buttons.BtnPressed(0)) { missile.Fire(ship.pos); sound.missileFiringSound(); };
-  if(buttons.BtnPressed(1)) ship.Move(+1);
-  if(buttons.BtnPressed(2)) ship.Move(-1);
+  if(buttons.btnPressed(0)) { missile.Fire(ship.pos); sound.missileFiringSound(); };
+  if(buttons.btnPressed(1)) ship.Move(+1);
+  if(buttons.btnPressed(2)) ship.Move(-1);
 }
 
 
@@ -100,8 +95,8 @@ void loop_GameScore()
     char scoreText[6];
     //score = 97;
     itoa(score, scoreText, 10);
-    textDisplay.DisplayText(scoreText);
-    hwsetup.StoreRndSeed((byte)score);
+    textDisplay.displayText(scoreText);
+    //hwsetup.StoreRndSeed((byte)score);
   }
   
   counterb2++;
