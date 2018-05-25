@@ -33,6 +33,6 @@ void loop()
 
   //Increment counter
   counter++;
-  if (counter > 9) counter = 0;
+  if (counter > 5) counter = 0;
 }
 
