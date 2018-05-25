@@ -1,7 +1,7 @@
 
-//========== SEED Electronics/Coding Workshop Exercise 6 ==========
+//========== SEED Electronics/Coding Workshop Exercise 8 ==========
 
-//Purpose: Numeric counter on 5x4 LED matrix
+//Purpose: Scrolling text on 11x4 LED matrix
 //Date: May 24, 2018
 
 
@@ -10,28 +10,22 @@ Display display;
 TextDisplay textDisplay(display);
 
 
-int counter = 0;
-
-
 void setup() 
 {
   //Initialize LED matrix display
   display.setup(11,4);
 }
 
-int pos = 16;
+
+int counter = 0;
+String text = "ABCDEF 012345";
 
 void loop() 
 {
-  //Create text string from counter value
-  char text[21] = "ABCDEF abcdef 012345";
-
-  //Draw text string to display
-  display.clear();
-  textDisplay.displayText(text, 21, pos);
-
-  pos--;
-  delay(150);
+  //Draw text using scrolling text function and counter for position
+  textDisplay.scrollText(text, counter);
+  counter++;
+  delay(100);
 }
 
 

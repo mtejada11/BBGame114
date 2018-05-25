@@ -23,16 +23,15 @@ void setup()
 void loop() 
 {
   //Create text string from counter value
-  char text[10];
-  itoa(counter, text, 10);
+  String text(counter);
 
   //Draw text string to display
   display.clear();
-  textDisplay.displayText(text);
+  textDisplay.displayTextCentered(text);
   delay(500);
 
   //Increment counter
   counter++;
-  if (counter > 5) counter = 0;
+  if (counter > 9) counter = 0;
 }
 

@@ -32,10 +32,10 @@ public:
     void setByte(byte x, byte bits);
     void vLine(byte x);
     void hLine(byte y);
-
-private:
     byte numCols;
     byte numRows;
+
+private:
     void setupTimedRefresh();
 };
 
@@ -293,8 +293,12 @@ class TextDisplay
 {
 public:
   TextDisplay(const Display& _display);
-  void displayText(char *s);
-  int getWidthPixels(char *s, int n);
+  
+  void displayText(String s, int pos = 0);
+  void displayTextCentered(String s);
+  void scrollText(String s, int counter);
+  int getWidth(String s);
+  int getScrollWidth(String s);
 
 private:
   const Display& display;
@@ -308,35 +312,37 @@ TextDisplay::TextDisplay(const Display& _display):
 }
 
 
-void TextDisplay::displayText(char *s)
+void TextDisplay::displayText(String s, int pos)
 {
-  String str = String(s);
-  byte n = str.length();
-  byte np = getWidthPixels(s, n);
-  int pos = (11 - np) / 2;
+  byte n = s.length();
+  byte np = getWidth(s);
   byte *p;
 
   for(byte i=0; i< n; i++)
   {
     getCharPixelData(s[i],&np,&p);
-    bool nsp = false;
-    if(np>=0x10) 
-    {
-      nsp = true;
-      np = np & 0xF;
-    }
     for(byte j=0; j<np; j++)
     {
       display.setByte(pos+j, p[j]);
     }
     pos += np;
-    if(!nsp && (i<(n-1)))pos += 1;
+    if (i < (n-1)) pos += 1;
   }
 }
 
 
-int TextDisplay::getWidthPixels(char *s, int n)
+void TextDisplay::displayTextCentered(String s)
 {
+  byte np = getWidth(s);
+  int pos = (display.numCols - np) / 2;
+  if (pos < 0) pos = 0;
+  displayText(s, pos);
+}
+
+
+int TextDisplay::getWidth(String s)
+{
+  byte n = s.length();
   byte np;
   byte *p;
 
@@ -344,36 +350,45 @@ int TextDisplay::getWidthPixels(char *s, int n)
   for(int i = 0; i < n; i++)
   {
     getCharPixelData(s[i],&np,&p);
-    bool nsp = false;
-    if(np>=0x10) 
-    {
-      nsp = true;
-      np = np & 0xF;
-    }
     pos += np;
-    if(!nsp && (i<(n-1)))pos += 1;
+    if (i < (n-1)) pos += 1;
   }
 
   return pos;
 }
 
 
+void TextDisplay::scrollText(String s, int counter)
+{
+  int pos = display.numCols - (counter % getScrollWidth(s));
+  display.clear();
+  displayText(s, pos);
+}
+
+
+int TextDisplay::getScrollWidth(String s)
+{
+  int width = display.numCols + getWidth(s) + display.numCols;
+  return width;
+}
+
+
 byte font3x4[] = 
 {
 //        !    "    #      $    %    &    '    (    )    *    +    ,    -    .    /
-//  ...  #..  #.#  .#.#   .#.  #.#  ##.  #..  .#.  #..  ...  ...  ...  ...  ...  ...#
-//  ...  #..  ...  #####  .##  .#.  ##.  ...  #..  .#.  #.#  .#.  ...  ...  ...  ..#.
+//  ...  #..  ##.  .#.#   .#.  #.#  ##.  #..  .#.  #..  ...  ...  ...  ...  ...  ...#
+//  ...  #..  ##.  #####  .##  .#.  ##.  #..  #..  .#.  #.#  .#.  ...  ...  ...  ..#.
 //  ...  ...  ...  #####  ##.  #..  ###  ...  #..  .#.  .#.  ###  .#.  ###  ...  .#..
 //  ...  #..  ...  .#.#.  .#.  #.#  ###  ...  .#.  #..  #.#  .#.  #..  ...  #..  #...
 
 3, 0x0, 0x0, 0x0, 0x0, 0x0, // (space)
 1, 0xD, 0x0, 0x0, 0x0, 0x0, // !
-3, 0x8, 0x0, 0x8, 0x0, 0x0, // "
+2, 0xC, 0xC, 0x0, 0x0, 0x0, // "
 5, 0x6, 0xF, 0x6, 0xF, 0x6, // #
 3, 0x2, 0xF, 0x4, 0x0, 0x0, // $
 3, 0xB, 0x4, 0x9, 0x0, 0x0, // %
 3, 0xF, 0xF, 0x3, 0x0, 0x0, // &
-1, 0x8, 0x0, 0x0, 0x0, 0x0, // '
+1, 0xC, 0x0, 0x0, 0x0, 0x0, // '
 2, 0x6, 0x9, 0x0, 0x0, 0x0, // (
 2, 0x9, 0x6, 0x0, 0x0, 0x0, // )
 3, 0x5, 0x2, 0x5, 0x0, 0x0, // *
