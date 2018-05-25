@@ -92,10 +92,9 @@ void loop_GameScore()
   if (counterb2 == 0)
   {
     display.clear();
-    char scoreText[6];
+    String scoreText(score);
     //score = 97;
-    itoa(score, scoreText, 10);
-    textDisplay.displayText(scoreText);
+    textDisplay.displayTextCentered(scoreText);
     //hwsetup.StoreRndSeed((byte)score);
   }
   
