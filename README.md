@@ -10,12 +10,7 @@ BBGame114 is handheld game device that consists of an Arduino Nano processor boa
 
 # BBGame114 Arduino Library
 
-The [BBGame114Lib.zip](https://github.com/mtejada11/BBGame114/blob/master/Lib/BBGame114Lib.zip?raw=true) library for Arduino included in this repository is a library that allows the BBGame114 device to be programmed with higher level methods/functions than the Arduino `digitalWrite` and `digitalRead` functions. See the page [BBGame114Lib Library Reference](https://github.com/mtejada11/BBGame114/wiki/BBGame114Lib-Library-Reference) page for more information on this library. To install this library in the Arduino IDE, 
-
-To install this library in the Arduino IDE:
-1. Download [BBGame114Lib.zip](https://github.com/mtejada11/BBGame114/blob/master/Lib/BBGame114Lib.zip?raw=true) from this repository
-2. In Arduino IDE, go to **Sketch**  >  **Include Library**  >  **Add .ZIP Library...**
-3. Find downloaded file and press OK
+The [BBGame114Lib.zip](https://github.com/mtejada11/BBGame114/blob/master/Lib/BBGame114Lib.zip?raw=true) library for Arduino included in this repository is a library that allows the BBGame114 device to be programmed with higher level methods/functions than the Arduino `digitalWrite` and `digitalRead` functions. See the page [BBGame114Lib Library Reference](https://github.com/mtejada11/BBGame114/wiki/BBGame114Lib-Library-Reference) page for more information on this library. 
 
 # BBGame114 Coding Exercises
 
