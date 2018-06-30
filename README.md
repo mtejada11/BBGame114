@@ -16,3 +16,29 @@ To install this library in the Arduino IDE:
 1. Download [BBGame114Lib.zip](https://github.com/mtejada11/BBGame114/blob/master/Lib/BBGame114Lib.zip?raw=true) from this repository
 2. In Arduiono IDE, go to **Sketch**  >  **Include Library**  >  **Add .ZIP Library...**
 3. Find downloaded file and press OK
+
+# BBGame114 Coding Exercises
+
+This repository contains several coding exercises. Exercises Ex01 to Ex03b are introductory Arduino exercises that do not required the LED matrix to be assembled. Exercises Ex04 to Ex07b are exercises than can be done with a partially assembled LED matrix of 5x4 pixels. The remaining exercises require the fully assembled BBGame114 circuit with and LED matrix of 11x4 pixels.
+
+| Number | Description |
+| --- | --- |
+|Ex01  	|Blink |
+|Ex02  	|Sequence |
+|Ex02b 	|Sequence with Button |
+|Ex03  	|Text Input Output |
+|Ex03b 	|Text Input Output LED Control |
+|Ex04  	|Matrix Test |
+|Ex05  	|Matrix Test with Lib |
+|Ex06  	|Numeric Counter |
+|Ex07  	|Set Pixels |
+|Ex07b 	|Set Pixels with Photoresistor |
+|Ex08  	|Scrolling Text |
+|Ex09  	|Thousand Counter |
+|Ex09b 	|Thousand Counter with Button |
+|Ex10a 	|Game Elements (Ship) |
+|Ex10b 	|Game Elements (Laser) |
+|Ex10c 	|Full Game |
+|Ex10d 	|Full Game with Score |
+Ex11a 	Light Meter
+Ex11b 	Light Meter Bar Graph
