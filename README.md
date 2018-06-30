@@ -14,7 +14,7 @@ The [BBGame114Lib.zip](https://github.com/mtejada11/BBGame114/blob/master/Lib/BB
 
 To install this library in the Arduino IDE:
 1. Download [BBGame114Lib.zip](https://github.com/mtejada11/BBGame114/blob/master/Lib/BBGame114Lib.zip?raw=true) from this repository
-2. In Arduiono IDE, go to **Sketch**  >  **Include Library**  >  **Add .ZIP Library...**
+2. In Arduino IDE, go to **Sketch**  >  **Include Library**  >  **Add .ZIP Library...**
 3. Find downloaded file and press OK
 
 # BBGame114 Coding Exercises
