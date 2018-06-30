@@ -40,5 +40,5 @@ This repository contains several coding exercises. Exercises Ex01 to Ex03b are i
 |Ex10b 	|Game Elements (Laser) |
 |Ex10c 	|Full Game |
 |Ex10d 	|Full Game with Score |
-Ex11a 	Light Meter
-Ex11b 	Light Meter Bar Graph
+|Ex11a 	|Light Meter |
+|Ex11b 	|Light Meter Bar Graph |
