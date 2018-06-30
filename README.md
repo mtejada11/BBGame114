@@ -7,3 +7,7 @@ BBGame114 is handheld game device that consists of an Arduino Nano processor boa
 
 ![BBGame114 circuit diagram](https://github.com/mtejada11/BBGame114/raw/doc/Build/BBGame114%20circuit%20diagram.png)
 *Circuit diagram*
+
+# BBGame114 Arduino Library
+
+The BBGame114Lib.zip library for Arduino included in this repository is a library that allows the BBGame114 device to be programmed with higher level methods/functions than the Arduino `digitalWrite` and `digitalRead` functions. See the page [BBGame114Lib Library Reference](https://github.com/mtejada11/BBGame114/wiki/BBGame114Lib-Library-Reference) page for more information on this library.
