@@ -33,7 +33,7 @@ This repository contains several coding exercises. Exercises Ex01 to Ex03b are i
 |Ex09b 	|Thousand Counter with Button |
 |Ex10a 	|Game Elements (Ship) |
 |Ex10b 	|Game Elements (Laser) |
-|Ex10c 	|Full Game |
-|Ex10d 	|Full Game with Score |
+|Ex10c 	|Full Space Invaders-like Game |
+|Ex10d 	|Full Space Invaders-like Game with Score |
 |Ex11a 	|Light Meter |
 |Ex11b 	|Light Meter Bar Graph |
