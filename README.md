@@ -29,11 +29,13 @@ This repository contains several coding exercises. Exercises Ex01 to Ex03b are i
 |Ex07  	|[Set Pixels](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex07_Set_Pixels/Ex07_Set_Pixels.ino) |
 |Ex07b 	|[Set Pixels with Photoresistor](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex07b_Set_Pixels_with_Photoresistor/Ex07b_Set_Pixels_with_Photoresistor.ino) |
 |Ex08  	|[Scrolling Text](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex08_Scrolling_Text/Ex08_Scrolling_Text.ino) |
-|Ex09  	|[Thousand Counter] |
-|Ex09b 	|[Thousand Counter with Button] |
-|Ex10a 	|[Game Elements (Ship)] |
-|Ex10b 	|[Game Elements (Laser)] |
-|Ex10c 	|[Full Space Invaders-like Game] |
-|Ex10d 	|[Full Space Invaders-like Game with Score] |
-|Ex11a 	|[Light Meter] |
-|Ex11b 	|[Light Meter Bar Graph] |
+|Ex09  	|[Thousand Counter](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex09_Thousand_Counter/Ex09_Thousand_Counter.ino) |
+|Ex09b 	|[Thousand Counter with Button](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex09b_Thousand_Counter_with_Button/Ex09b_Thousand_Counter_with_Button.ino) |
+|Ex10a 	|[Game Elements (Ship)](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex10a_Game_Elements/Ex10a_Game_Elements.ino) |
+|Ex10b 	|[Game Elements (Laser)](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex10b_Game_Elements/Ex10b_Game_Elements.ino) |
+|Ex10c 	|[Full Space Invaders-like Game](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex10c_Full_Game/Ex10c_Full_Game.ino) |
+|Ex10d 	|[Full Space Invaders-like Game with Score](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex10d_Full_Game_with_Score/Ex10d_Full_Game_with_Score.ino) |
+|Ex10e 	|[Full Space Invaders-like Game with Custom Levels](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex10e_Full_Game_with_Custom_Levels/Ex10e_Full_Game_with_Custom_Levels.ino) |
+|Ex11a 	|[Light Meter](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex11a_Light_Meter/Ex11a_Light_Meter.ino) |
+|Ex11b 	|[Light Meter Bar Graph](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex11b_Light_Meter_Bar_Graph/Ex11b_Light_Meter_Bar_Graph.ino) |
+|Ex12 	|[NeoPixels](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex12b_NeoPixels42/Ex12b_NeoPixels42.ino) |
