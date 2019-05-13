@@ -18,22 +18,22 @@ This repository contains several coding exercises. Exercises Ex01 to Ex03b are i
 
 | Number | Description |
 | --- | --- |
-|Ex01  	|Blink |
-|Ex02  	|Sequence |
-|Ex02b 	|Sequence with Button |
-|Ex03  	|Text Input Output |
-|Ex03b 	|Text Input Output LED Control |
-|Ex04  	|Matrix Test |
-|Ex05  	|Matrix Test with Lib |
-|Ex06  	|Numeric Counter |
-|Ex07  	|Set Pixels |
-|Ex07b 	|Set Pixels with Photoresistor |
-|Ex08  	|Scrolling Text |
-|Ex09  	|Thousand Counter |
-|Ex09b 	|Thousand Counter with Button |
-|Ex10a 	|Game Elements (Ship) |
-|Ex10b 	|Game Elements (Laser) |
-|Ex10c 	|Full Space Invaders-like Game |
-|Ex10d 	|Full Space Invaders-like Game with Score |
-|Ex11a 	|Light Meter |
-|Ex11b 	|Light Meter Bar Graph |
+|Ex01  	|[Blink](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex01_Blink/Ex01_Blink.ino) |
+|Ex02  	|[Sequence](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex02_Sequence/Ex02_Sequence.ino) |
+|Ex02b 	|[Sequence with Button](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex02b_Sequence_with_Button/Ex02b_Sequence_with_Button.ino) |
+|Ex03  	|[Text Input Output](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex03_Text_Input_Output/Ex03_Text_Input_Output.ino) |
+|Ex03b 	|[Text Input Output LED Control](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex03b_Text_Input_Output_LED_Control/Ex03b_Text_Input_Output_LED_Control.ino) |
+|Ex04  	|[Matrix Test](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex04_Matrix_Test/Ex04_Matrix_Test.ino) |
+|Ex05  	|[Matrix Test with Lib](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex05_Matrix_Test_with_Lib/Ex05_Matrix_Test_with_Lib.ino) |
+|Ex06  	|[Numeric Counter](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex06_Numeric_Counter/Ex06_Numeric_Counter.ino) |
+|Ex07  	|[Set Pixels](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex07_Set_Pixels/Ex07_Set_Pixels.ino) |
+|Ex07b 	|[Set Pixels with Photoresistor](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex07b_Set_Pixels_with_Photoresistor/Ex07b_Set_Pixels_with_Photoresistor.ino) |
+|Ex08  	|[Scrolling Text](https://github.com/mtejada11/BBGame114/blob/master/Exercises/Ex08_Scrolling_Text/Ex08_Scrolling_Text.ino) |
+|Ex09  	|[Thousand Counter] |
+|Ex09b 	|[Thousand Counter with Button] |
+|Ex10a 	|[Game Elements (Ship)] |
+|Ex10b 	|[Game Elements (Laser)] |
+|Ex10c 	|[Full Space Invaders-like Game] |
+|Ex10d 	|[Full Space Invaders-like Game with Score] |
+|Ex11a 	|[Light Meter] |
+|Ex11b 	|[Light Meter Bar Graph] |
