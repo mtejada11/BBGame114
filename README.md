@@ -14,7 +14,7 @@ The [BBGame114Lib.zip](https://github.com/mtejada11/BBGame114/blob/master/Lib/BB
 
 # BBGame114 Coding Exercises
 
-This repository contains several coding exercises. Exercises Ex01 to Ex03b are introductory Arduino exercises that do not required the LED matrix to be assembled. Exercises Ex04 to Ex07b are exercises than can be done with a partially assembled LED matrix of 5x4 pixels. The remaining exercises require the fully assembled BBGame114 circuit with and LED matrix of 11x4 pixels.
+This repository contains several coding exercises. Exercises Ex01 to Ex03b are introductory Arduino exercises that do not require the LED matrix to be assembled. Exercises Ex04 to Ex07b are exercises than can be done with a partially assembled LED matrix of 5x4 pixels. The remaining exercises require the fully assembled BBGame114 circuit with and LED matrix of 11x4 pixels.
 
 | Number | Description |
 | --- | --- |
