@@ -1,18 +1,14 @@
 # BBGame114
 
-BBGame114 is handheld game device that consists of an Arduino Nano processor board, an 11x4 LED matrix display, three input buttons and a piezoelectric speaker. This device can be programmed using the Arduino IDE. This GitHub repository contains the BBGame114Lib library that can be used for programming this device, and it also contains a Space Invaders-like game.
+## Code
 
-<img src="https://github.com/mtejada11/BBGame114/raw/doc/Build/BBGame114.png" width="800" alt="BBGame114 build diagram">
-*Diagram of BBGame114 assembled on 830-point solderless breadboard*
+The main program [bbgame114.ino](https://github.com/mtejada11/BBGame248/blob/master/bbgame114.ino) contains a space invaders-like game that uses the BBGame248 library to demonstrate the use of text and graphics on the 11x4 LED matrix. The coding examples below show other types of programs that can be written.
 
-<img src="https://github.com/mtejada11/BBGame114/raw/doc/Build/BBGame114%20circuit%20diagram.png" width="800" alt="BBGame114 circuit diagram">
-*Circuit diagram*
-
-# BBGame114 Arduino Library
+## BBGame114 Arduino Library
 
 The [BBGame114Lib.zip](https://github.com/mtejada11/BBGame114/blob/master/Lib/BBGame114Lib.zip?raw=true) library for Arduino included in this repository is a library that allows the BBGame114 device to be programmed with higher level methods/functions than the Arduino `digitalWrite` and `digitalRead` functions. See the page [BBGame114Lib Library Reference](https://github.com/mtejada11/BBGame114/wiki/BBGame114Lib-Library-Reference) page for more information on this library. 
 
-# BBGame114 Coding Exercises
+## BBGame114 Coding Exercises
 
 This repository contains several coding exercises. Exercises Ex01 to Ex03b are introductory Arduino exercises that do not require the LED matrix to be assembled. Exercises Ex04 to Ex07b are exercises than can be done with a partially assembled LED matrix of 5x4 pixels. The remaining exercises require the fully assembled BBGame114 circuit with and LED matrix of 11x4 pixels.
 
