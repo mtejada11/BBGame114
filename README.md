@@ -1,4 +1,4 @@
-# BBGame114
+# BBGame114: Breadboard Game with 11x4 Matrix
 
 ## Code
 
